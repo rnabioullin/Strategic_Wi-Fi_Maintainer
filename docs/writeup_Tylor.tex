@@ -1,0 +1,104 @@
+\documentclass{article}
+\title{Strategic Wi-Fi Maintainer}
+\author{
+  Tylor Reeves\\
+  \and
+  Ruslan Nabioullin
+}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Over the past three decades, mobile computing has proliferated and come to
+depend heavily upon the Internet. Unlike desktop computers, mobile computers,
+which include portable computers (laptops, netbooks, etc.), mobile phones, and
+wearable computers (e.g., smartwatches), require a wireless interface for
+network connectivity. This is achieved mainly by the use of more modern cellular
+and wireless local area network technologies, the latter typically implemented
+as Wi-Fi. Although cellular technology offers relatively large ranges, it
+suffers from a number of relative disadvantages including, but not limited to
+the following, the fact that many portable computers lack a cellular modem, a
+cellular modem might be incompatible with a service provider, esp. outside of a
+region or nation, cellular service presents privacy concerns, a user may simply
+lack a data plan, and service may be of low quality or even unavailable in some
+areas. Wi-Fi tends to be relatively faster and cheaper, in many cases free of
+charge, and in any case adds redundancy. Therefore, Wi-Fi is an important
+complementary technology.
+
+However, existing Wi-Fi connection managers are usually intended to be used only
+with preconfigured networks; not all can connect automatically to new networks,
+and for those that can, they might not do so in an intelligent and aggressive
+manner. This places an unnecessary burden upon the user, who must manually scan
+for networks, connect to promising network(s), and test them. The goal of our
+project is to design a user-friendly proof of concept utility that will automate
+this by attempting to automatically maintain a working Wi-Fi connection at all
+costs in a strategic and efficient manner.
+
+\section{Approach}
+The utility will be written entirely in Racket and will require GNU/Linux with a
+compatible Wi-Fi network interface controller. Being a proof of concept program,
+it will have a minimal interface consisting of simple status messages printed
+out to the command line interface.
+
+The utility will constantly check for Internet connectivity by means of the ping
+utility. If connectivity is lost, the utility will proceed to attempt to
+establish a connection from available Wi-Fi networks.
+
+First, the utility will scan for all Wi-Fi networks in range by means of the
+iwlist utility and utilize an algorithm to determine the order in which to
+attempt establishing a connection so as to: 1. minimize the time spent
+attempting to connect; 2. maximize the probability of the connection being of
+high quality; 3. maximize propriety and minimize potential legal liability for
+the user. The algorithm will calculate a score for every network. A priori
+criteria will include signal strength, network name, and security in use, if
+any. Additionally, it will consult an internal database of past networks
+utilized to possibly add the criterion of the presence of connectivity in the
+past. Next, it will attempt to connect to the networks in order of descending
+score by means of the iwconfig and dhclient utilities. If security is employed,
+the utility will attempt to crack it by means of Aircrack-ng or a similar
+utility if not done so in the past. Once a connection to the network is
+established, the utility will test Internet connectivity by means of the ping
+utility. If the connection is suitable, the utility will revert back to its
+initial state of ensuring that there is connectivity. Else, for example if a
+login is required or the network is otherwise nonfunctional, the utility will
+restart the process with the network of the next lower score, if any.  If no
+untested networks remain, the utility will continue to search for a viable
+network indefinitely, either until it finds one or the user terminates the
+utility.
+
+Functions will be developed which will execute the abovementioned utilities by
+means of Racket's process functions. Output from them will be subsequently
+parsed by means of Racket's byte and string input functions and pertinent data
+returned to the caller. The utility will update its database when it determines
+the connectivity status and/or security credentials, if any, of a network, and
+maintain the database by periodically expunging any stale entries.
+
+\section{Demonstration and Evaluation}
+The project will be demonstrated in a live and realistic manner. A netbook will
+be set up displaying the utility and an indication of the presence of simulated
+Internet connectivity to the audience. Several Wi-Fi networks will be physically
+set up with varying characteristics so as to simulate real-life environments and
+to demonstrate key functionality; e.g., the environment may consist of two
+insecure networks of different signal strength, a secure network and an insecure
+network lacking simulated Internet connectivity. Physical movement of the user
+will be simulated by the disabling of certain Wi-Fi networks.
+
+The project shall be deemed minimally successful if the utility is able to
+maintain a functioning Internet connection to the extent possible from insecure
+Wi-Fi networks in a timely manner, without user intervention. Ideally, the
+utility will also be able to gain access and connect to secured Wi-Fi networks
+as well, purely as a proof of concept.
+
+\section{Deliverables Schedule}
+\begin{tabular}[t]{|l|p{.15\linewidth}|p{.3\linewidth}|p{.3\linewidth}|}
+  \hline
+  Date & Description & What I will do & What my partner will do\\\hline
+  11-24 & First deliverable & Development of the scoring algorithm. &
+  Development of an interface to the scanning of Wi-Fi networks.\\\hline
+  12-1 & Second deliverable & Development of the database. & Development of
+  remaining basic interfaces.\\\hline
+  12-8 & Final project & Testing and debugging. & Development of a cracking
+  interface (optional). Testing and debugging.\\\hline
+\end{tabular}
+\end{document}
