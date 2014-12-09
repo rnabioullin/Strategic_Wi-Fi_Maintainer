@@ -5,6 +5,7 @@
 #lang racket
 
 (require racket/system)
+(require (planet neil/sudo:1:1))
 
 ;; returns #t if Internet connectivity is available, and #f otherwise
 (define (Internet-connectivity-is-available)
@@ -13,7 +14,9 @@
 ;; enables the Wi-Fi interface
 ;; returns nothing
 (define (enable-Wi-Fi)
-  #f)
+  (system*/sudo "/sbin/ifconfig"
+		"wlan0"
+		"up"))
 
 ;; scans for insecure Wi-Fi networks
 ;; returns a list of attributes of insecure Wi-Fi network(s) that are in range,
@@ -26,12 +29,16 @@
 ;; network to connect to
 ;; returns nothing
 (define (configure-Wi-Fi network_name)
-  #f)
+  (system*/sudo "/sbin/iwconfig"
+		"wlan0"
+		"essid"
+		network_name))
 
 ;; requests the IP address
 ;; returns nothing
 (define (request-IP-address)
-  #f)
+  (system*/sudo "/sbin/dhclient"
+		"wlan0"))
 
 ;; Wi-Fi network name selector
 ;; argument "network"---the network attributes
