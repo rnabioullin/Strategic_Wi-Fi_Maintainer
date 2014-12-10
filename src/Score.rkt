@@ -9,11 +9,13 @@
 ;;Checks the network db for a network based on ssid, and
 ;;Returns an appropriate status based on whether or not
 ;;The network was previously connected to successfully
-(define (check-for-network ssid db)
-  (cond ((null? db) 0)
-        ((and (equal? ssid (car (car db))) (equal? (car (cdr (car db))) #f)) #f)
-        ((and (equal? ssid (car (car db))) (equal? (car (cdr (car db))) #t)) #t)
-        (else (check-for-network ssid (cdr db)))))
+(define (check-for-network ssid)
+  (define (check-iter ssid db)
+    (cond ((null? db) 0)
+          ((and (equal? ssid (car (car db))) (equal? (car (cdr (car db))) #f)) #f)
+          ((and (equal? ssid (car (car db))) (equal? (car (cdr (car db))) #t)) #t)
+          (else (check-for-network ssid (cdr db)))))
+  (check-iter ssid ssid-db))
 
 ;;Removes all network entries from the database that are older than
 ;;a given time (in milliseconds) "network-age"
