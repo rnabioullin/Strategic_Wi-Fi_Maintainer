@@ -14,7 +14,7 @@
     (cond ((null? db) 0)
           ((and (equal? ssid (car (car db))) (equal? (car (cdr (car db))) #f)) #f)
           ((and (equal? ssid (car (car db))) (equal? (car (cdr (car db))) #t)) #t)
-          (else (check-for-network ssid (cdr db)))))
+          (else (check-iter ssid (cdr db)))))
   (check-iter ssid ssid-db))
 
 ;;Removes all network entries from the database that are older than

@@ -27,7 +27,7 @@
          (display "You are currently connected to the Internet")
        (sleep 10)
        (ping-loop))
-      (else null)))
+      (else (void))))
 
 (for ((i (in-naturals)))
   (connectivity-loop (sort (scan-insecure-Wi-Fi) #:key cadr >))
