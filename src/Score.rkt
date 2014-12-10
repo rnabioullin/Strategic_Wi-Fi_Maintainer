@@ -10,9 +10,9 @@
 ;;Returns an appropriate status based on whether or not
 ;;The network was previously connected to successfully
 (define (check-for-network ssid db)
-  (cond ((null? db) "No Previous Connection Attempts")
-        ((and (equal? ssid (car (car db))) (equal? (car (cdr (car db))) #f)) "Bad Connection")
-        ((and (equal? ssid (car (car db))) (equal? (car (cdr (car db))) #t)) "Good Connection")
+  (cond ((null? db) 0)
+        ((and (equal? ssid (car (car db))) (equal? (car (cdr (car db))) #f)) #f)
+        ((and (equal? ssid (car (car db))) (equal? (car (cdr (car db))) #t)) #t)
         (else (check-for-network ssid (cdr db)))))
 
 ;;Removes all network entries from the database that are older than
