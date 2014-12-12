@@ -2,8 +2,6 @@
 ;; description: interface to Wi-Fi networking functionality
 ;; author(s): Ruslan Nabioullin (rnabioul@cs.uml.edu)
 
-;#lang racket
-
 (require racket/system)
 
 ;; returns #t if Internet connectivity is available, and #f otherwise
@@ -12,7 +10,7 @@
   (system "ping -c 1 192.168.1.1 | grep \" 0% packet loss\""))
 
 ;; enables the Wi-Fi interface
-;; returns nothing
+;; returns an undefined value
 (define (enable-Wi-Fi)
   (system "ifconfig wlan0 up"))
 
@@ -27,20 +25,20 @@
                                         "                    ESSID:\"" #:right? #f)
                            "\"" #:left? #f)
               (trim-iwlist-SSID (cdr SSID-list)))))
-  
+
   (define (trim-iwlist-security-status list)
     (if (empty? list)
         '()
         (cons (string-trim (car list) "                    Encryption key:" #:right? #f)
               (trim-iwlist-security-status (cdr list)))))
-  
+
   (define (trim-iwlist-quality-status list)
     (if (empty? list)
         '()
         (cons (string-trim (string-trim (car list) "Quality=" #:right? #f)
                            "/70" #:left? #f)
               (trim-iwlist-quality-status (cdr list)))))
-  
+
   (define scan-results-filename-raw (with-output-to-string
 				      (lambda () (system "mktemp"))))
   ; strip the ending newline
@@ -61,7 +59,7 @@
   (define security-status-list-processed (trim-iwlist-security-status
                                           (string-split security-status-list "\n")))
   (define quality-list-processed (trim-iwlist-quality-status (string-split quality-list)))
-  
+
   (define (construct-networks list-name list-security-status list-quality)
     (cond ((empty? list-name) '())
           ((equal? (car list-security-status) "on")
@@ -70,36 +68,33 @@
           (else (cons (list (car list-name) (string->number (car list-quality)))
                 (construct-networks (cdr list-name) (cdr list-security-status)
                                (cdr (cdr (cdr (cdr list-quality)))))))))
-  
+
   (construct-networks SSID_list_processed security-status-list-processed quality-list-processed))
-        
-;; (define (scan-insecure-Wi-Fi)
-;;   (list (list "05B401934691" 50)))
 
 ;; configures the Wi-Fi interface
 ;; argument "network_name"---a string specifiying the network name of the
 ;; network to connect to
-;; returns nothing
+;; returns an undefined value
 (define (configure-Wi-Fi network_name)
   (write (string-append "connecting to " network_name))
   (newline)
   (system (string-append "iwconfig wlan0 essid " network_name)))
 
 ;; requests the IP address
-;; returns nothing
+;; returns an undefined value
 (define (request-IP-address)
   (write "requesting IP address")
   (newline)
   (system "dhclient wlan0"))
 
 ;; Wi-Fi network name selector
-;; argument "network"---the network attributes
-;; returns the network name of "network"
+;; argument "network_attributes"---the network attributes
+;; returns the network name of "network_attributes"
 (define (network-name network_attributes)
   (car network_attributes))
 
 ;; Wi-Fi network connection quality selector
-;; argument "network"---the network attributes
-;; returns the connection quality of "network", [0, 70] units
+;; argument "network_attributes"---the network attributes
+;; returns the connection quality of "network_attributes", [0, 70] units
 (define (network-connection-quality network_attributes)
   (car (cdr network_attributes)))
