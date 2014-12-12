@@ -8,7 +8,8 @@
 (enable-Wi-Fi)
 
 (define (connectivity-loop db)
-  (cond ((null? db) (display "No Connections Currently Available"))
+  (cond ((null? db) (display "No Connections Currently Available")
+                    (newline))
         ((equal? (check-for-network (car (car db))) 0) 
          (configure-Wi-Fi (car (car db)))
          (request-IP-address)
@@ -25,6 +26,7 @@
 (define (ping-loop)
   (cond ((equal? (Internet-connectivity-is-available) #t)
          (display "You are currently connected to the Internet")
+         (newline)
        (sleep 10)
        (ping-loop))
       (else (void))))

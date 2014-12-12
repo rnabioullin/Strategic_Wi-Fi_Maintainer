@@ -5,7 +5,6 @@
 ;#lang racket
 
 (require racket/system)
-(require (planet neil/sudo:1:1))
 
 ;; returns #t if Internet connectivity is available, and #f otherwise
 (define (Internet-connectivity-is-available)
@@ -83,12 +82,14 @@
 ;; returns nothing
 (define (configure-Wi-Fi network_name)
   (write (string-append "connecting to " network_name))
+  (newline)
   (system (string-append "iwconfig wlan0 essid " network_name)))
 
 ;; requests the IP address
 ;; returns nothing
 (define (request-IP-address)
-  (write "request-IP-address")
+  (write "requesting IP address")
+  (newline)
   (system "dhclient wlan0"))
 
 ;; Wi-Fi network name selector
